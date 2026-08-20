@@ -3,14 +3,15 @@ let products=JSON.parse(localStorage.getItem('noma-products')||'null')||defaults
 function renderFilters(){let cs=['Todos',...new Set(products.map(p=>p.category))];filters.innerHTML=cs.map(c=>`<button class="filter ${c===filter?'on':''}" onclick="setFilter(this.dataset.c)" data-c="${c}">${c}</button>`).join('')}function setFilter(c){filter=c;renderFilters();renderProducts()}
 function renderProducts(){let ps=filter==='Todos'?products:products.filter(p=>p.category===filter);grid.innerHTML=ps.length?ps.map(p=>`<article class="product">
 <div class="media">
-<img src="${p.image}" alt="${p.name}" loading="lazy">${p.tag?`<span class="tag">${p.tag}</span>`:''}<button class="add" onclick="add(${p.id})" aria-label="Adicionar ao carrinho">+</button>
+<img src="${p.image}" alt="${p.name}" loading="lazy">${p.tag?`<span class="tag">${p.tag}</span>`:''}<button class="add" onclick="event.stopPropagation();add(${p.id})" aria-label="Adicionar ao carrinho">+</button>
 </div>
 <div class="info">
 <div class="cat">${p.category}</div>
 <div class="name">${p.name}</div>
 <span class="price">${money(p.price)}</span>
 </div>
-</article>`).join(''):'<div class="empty">Nenhum produto nesta categoria.</div>'}
+</article>`).join(''):'<div class="empty">Nenhum produto nesta categoria.</div>';document.querySelectorAll('.product').forEach(card=>{card.onclick=()=>openProduct(Number(card.querySelector('.add').getAttribute('onclick').match(/add\((\d+)/)[1]))})}
+function openProduct(id){const p=products.find(x=>x.id===id);if(!p)return;productBox.innerHTML=`<button class="x product-close" onclick="closeModal('productModal')">×</button><div class="product-modal-content"><img src="${p.image}" alt="${p.name}"><div class="product-modal-copy"><div class="cat">${p.category}</div><h3>${p.name}</h3><strong class="price">${money(p.price)}</strong><p>${p.description||'Uma peça feita para acompanhar sua rotina por muitos anos.'}</p><small>${p.stock} unidades disponíveis</small><button class="btn" onclick="add(${p.id});closeModal('productModal')">Adicionar à sacola →</button></div></div>`;productModal.classList.add('on')}
 function add(id){let p=products.find(x=>x.id===id),i=cart.find(x=>x.id===id);if(!p||p.stock<1)return notify('Produto sem estoque');if(i&&i.qty>=p.stock)return notify('Estoque máximo atingido');i?i.qty++:cart.push({id,qty:1});save();renderCart();notify(p.name+' adicionado à sacola')}
 function qty(id,n){let i=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!i)return;i.qty=Math.max(0,Math.min(p.stock,i.qty+n));if(!i.qty)cart=cart.filter(x=>x.id!==id);save();renderCart()}const total=()=>cart.reduce((s,i)=>s+(products.find(p=>p.id===i.id)?.price||0)*i.qty,0);
 function renderCart(){let valid=cart.map(i=>({...i,p:products.find(p=>p.id===i.id)})).filter(i=>i.p);count.textContent=valid.reduce((s,i)=>s+i.qty,0);items.innerHTML=valid.length?valid.map(i=>`<div class="item">

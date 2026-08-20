@@ -45,6 +45,10 @@
     <script src="store.js">
     </script>
     <script>
+      const cartItems = document.getElementById('cartItems');
+      const subtotal = document.getElementById('subtotal');
+      const shipping = document.getElementById('shipping');
+      const total = document.getElementById('total');
       function render(){const list=NomaStore.enriched(),sub=NomaStore.subtotal(),ship=sub>=299?0:24.9;cartItems.innerHTML=list.length?list.map(i=>`<article class="cart-item">
         <a href="produto.html?id=${i.id}">
           <img src="${i.product.image}" alt="${i.product.name}">

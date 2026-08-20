@@ -15,6 +15,8 @@ const NomaStore = (() => {
   const cart=()=>read('noma-cart',[]);
   const setCart=value=>{localStorage.setItem('noma-cart',JSON.stringify(value));updateBadge()};
   const money=value=>Number(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+  const imageUrl=value=>/^https:\/\//i.test(String(value||''))?String(value):'';
   function add(id,qty=1){const p=products().find(x=>x.id===Number(id));const items=cart();const item=items.find(x=>x.id===Number(id));if(!p||p.stock<1)return false;if(item)item.qty=Math.min(p.stock,item.qty+qty);else items.push({id:p.id,qty:Math.min(qty,p.stock)});setCart(items);return true}
   function change(id,delta){let items=cart(),item=items.find(x=>x.id===Number(id)),p=products().find(x=>x.id===Number(id));if(!item||!p)return;item.qty=Math.max(0,Math.min(p.stock,item.qty+delta));setCart(items.filter(x=>x.qty>0))}
   const enriched=()=>cart().map(i=>({...i,id:Number(i.id),product:products().find(p=>Number(p.id)===Number(i.id))})).filter(i=>i.product);
@@ -24,6 +26,6 @@ const NomaStore = (() => {
   function header(){return `<div class="announce">Frete grátis acima de <b>R$ 299</b></div><header><a class="brand" href="index.html">no<span>ma.</span></a><nav><a href="index.html">Início</a><a href="loja.html">Loja</a><a href="sobre.html">Sobre</a></nav><div class="header-actions"><a class="cart-link" href="carrinho.html">Sacola <b data-cart-count>0</b></a></div></header>`}
   function footer(){return `<footer><div><a class="brand light" href="index.html">no<span>ma.</span></a><p>Design essencial para uma vida com mais intenção.</p></div><div><b>Comprar</b><a href="loja.html">Todos os produtos</a><a href="carrinho.html">Minha sacola</a></div><div><b>Institucional</b><a href="sobre.html">Nossa história</a><a href="sobre.html#trocas">Trocas e envios</a></div><small>© 2026 Noma Casa.</small></footer>`}
   function shell(){document.querySelector('[data-header]')?.replaceChildren(document.createRange().createContextualFragment(header()));document.querySelector('[data-footer]')?.replaceChildren(document.createRange().createContextualFragment(footer()));updateBadge()}
-  return {products,setProducts,cart,setCart,money,add,change,enriched,subtotal,updateBadge,shell,loadCatalog};
+  return {products,setProducts,cart,setCart,money,escapeHtml,imageUrl,add,change,enriched,subtotal,updateBadge,shell,loadCatalog};
 })();
 document.addEventListener('DOMContentLoaded',()=>{NomaStore.shell();NomaStore.loadCatalog()});

@@ -30,4 +30,16 @@ npm run deploy
 
 No Stripe, crie um endpoint `https://SEU-DOMINIO.com.br/api/webhooks/stripe` ouvindo `checkout.session.completed` e copie o signing secret para `STRIPE_WEBHOOK_SECRET`. Teste primeiro com as chaves de teste (`sk_test_`), valide um pedido completo e só então troque para as chaves de produção (`sk_live_`).
 
-O painel `admin.html` ainda é apenas um catálogo local do navegador; não use essa tela para gerir o estoque de produção. O estoque real deve ser alterado diretamente no D1 até a autenticação do painel ser implementada.
+O painel `admin.html` agora usa o D1 e exige o secret `ADMIN_TOKEN`. O painel ainda não faz pedidos automáticos a fornecedores; essa integração deve ser adicionada depois de validar as APIs e autorizações da plataforma.
+
+## Secrets
+
+Use `.env.example` como modelo, copie para `.env.production.local`, preencha localmente e importe no Worker:
+
+```bash
+Copy-Item .env.example .env.production.local
+# edite .env.production.local sem fazer commit
+npx wrangler secret bulk .env.production.local
+```
+
+Este projeto usa Cloudflare Workers com D1, não Pages puro. O formato `.env` é aceito pelo `wrangler secret bulk`; os valores são enviados como secrets e não ficam no bundle. [Documentação oficial](https://developers.cloudflare.com/workers/configuration/secrets/)

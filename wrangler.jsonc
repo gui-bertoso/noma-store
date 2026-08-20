@@ -5,5 +5,11 @@
   "main": "src/worker.js",
   "assets": {
     "directory": "./dist"
-  }
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "noma-db",
+    "database_id": "2e1ac6ac-acde-4b21-9166-700d5730ccce"
+  }],
+  "vars": { "PUBLIC_SITE_URL": "https://SEU-DOMINIO.com.br" }
 }

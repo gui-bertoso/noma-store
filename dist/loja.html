@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Loja — Noma</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pages.css">
+  </head>
+  <body>
+    <div data-header>
+    </div>
+    <main class="wrap">
+      <section class="page-head">
+        <div class="crumb">Início / Loja</div>
+        <h1>Todos os produtos</h1>
+        <p>Peças honestas, úteis e bonitas para criar espaços que fazem bem.</p>
+      </section>
+      <div class="filters" id="filters">
+      </div>
+      <section class="products" id="products">
+      </section>
+    </main>
+    <div data-footer>
+    </div>
+    <div class="toast" id="toast">
+    </div>
+    <script src="store.js">
+    </script>
+    <script>
+      let active='Todos';function render(){const list=active==='Todos'?NomaStore.products():NomaStore.products().filter(p=>p.category===active);products.innerHTML=list.map(p=>`<article class="card">
+        <a href="produto.html?id=${p.id}">
+          <div class="media">
+            <img src="${p.image}" alt="${p.name}">${p.tag?`<span class="tag">${p.tag}</span>`:''}</div>
+            <div class="card-info">
+              <div class="category">${p.category}</div>
+              <h3>${p.name}</h3>
+              <span class="price">${NomaStore.money(p.price)}</span>
+            </div>
+          </a>
+          <button class="quick" onclick="add(${p.id})" aria-label="Adicionar ${p.name}">+</button>
+        </article>`).join('')||'<div class="empty">Nenhum produto encontrado.</div>'}function renderFilters(){const cats=['Todos',...new Set(NomaStore.products().map(p=>p.category))];filters.innerHTML=cats.map(c=>`<button class="filter ${c===active?'on':''}" data-category="${c}">${c}</button>`).join('');filters.querySelectorAll('button').forEach(b=>b.onclick=()=>{active=b.dataset.category;renderFilters();render()})}function add(id){NomaStore.add(id);toast.textContent='Produto adicionado à sacola';toast.classList.add('on');setTimeout(()=>toast.classList.remove('on'),1800)}renderFilters();render();
+      </script>
+    </body>
+  </html>

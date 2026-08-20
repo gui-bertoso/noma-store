@@ -17,7 +17,7 @@ const NomaStore = (() => {
   const money=value=>Number(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   function add(id,qty=1){const p=products().find(x=>x.id===Number(id));const items=cart();const item=items.find(x=>x.id===Number(id));if(!p||p.stock<1)return false;if(item)item.qty=Math.min(p.stock,item.qty+qty);else items.push({id:p.id,qty:Math.min(qty,p.stock)});setCart(items);return true}
   function change(id,delta){let items=cart(),item=items.find(x=>x.id===Number(id)),p=products().find(x=>x.id===Number(id));if(!item||!p)return;item.qty=Math.max(0,Math.min(p.stock,item.qty+delta));setCart(items.filter(x=>x.qty>0))}
-  const enriched=()=>cart().map(i=>({...i,product:products().find(p=>p.id===i.id)})).filter(i=>i.product);
+  const enriched=()=>cart().map(i=>({...i,id:Number(i.id),product:products().find(p=>Number(p.id)===Number(i.id))})).filter(i=>i.product);
   const subtotal=()=>enriched().reduce((sum,i)=>sum+i.product.price*i.qty,0);
   function updateBadge(){document.querySelectorAll('[data-cart-count]').forEach(el=>el.textContent=cart().reduce((s,i)=>s+i.qty,0))}
   function header(){return `<div class="announce">Frete grátis acima de <b>R$ 299</b></div><header><a class="brand" href="index.html">no<span>ma.</span></a><nav><a href="index.html">Início</a><a href="loja.html">Loja</a><a href="sobre.html">Sobre</a></nav><div class="header-actions"><a class="round" href="admin.html" aria-label="Painel de produtos">⚙</a><a class="cart-link" href="carrinho.html">Sacola <b data-cart-count>0</b></a></div></header>`}

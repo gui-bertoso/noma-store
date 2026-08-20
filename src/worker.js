@@ -1,5 +1,5 @@
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8" } });
-const cors = (r) => { r.headers.set("access-control-allow-origin", "*"); r.headers.set("access-control-allow-headers", "content-type"); r.headers.set("access-control-allow-methods", "GET, POST, OPTIONS"); return r; };
+const cors = (r, env) => { r.headers.set("access-control-allow-origin", new URL(env.PUBLIC_SITE_URL).origin); r.headers.set("access-control-allow-headers", "content-type"); r.headers.set("access-control-allow-methods", "GET, POST, OPTIONS"); r.headers.set("vary", "Origin"); return r; };
 
 async function createStripeSession(env, orderId, email, items) {
   const params = new URLSearchParams({ mode: "payment", customer_email: email, client_reference_id: orderId, success_url: `${env.PUBLIC_SITE_URL}/checkout.html?success=1&order=${orderId}`, cancel_url: `${env.PUBLIC_SITE_URL}/checkout.html?cancelled=1`, "shipping_address_collection[allowed_countries][0]": "BR" });
@@ -69,4 +69,4 @@ async function webhook(request, env) {
   return new Response("ok");
 }
 
-export default { async fetch(request, env) { try { const path = new URL(request.url).pathname; if (path === "/api/webhooks/stripe" && request.method === "POST") return webhook(request, env); if (path.startsWith("/api/")) return cors(await api(request, env)); return env.ASSETS.fetch(request); } catch (error) { console.error(error); return json({ error: "Internal server error" }, 500); } } };
+export default { async fetch(request, env) { try { const path = new URL(request.url).pathname; if (path === "/api/webhooks/stripe" && request.method === "POST") return webhook(request, env); if (path.startsWith("/api/")) return cors(await api(request, env), env); return env.ASSETS.fetch(request); } catch (error) { console.error(error); return json({ error: "Internal server error" }, 500); } } };

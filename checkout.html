@@ -33,7 +33,7 @@
       const subtotal = NomaStore.subtotal(), frete = subtotal >= 299 ? 0 : 24.9;
       sub.textContent = NomaStore.money(subtotal); ship.textContent = frete ? NomaStore.money(frete) : 'Grátis'; grand.textContent = NomaStore.money(subtotal + frete);
       form.onsubmit = async (event) => { event.preventDefault(); const button = form.querySelector('button'); button.disabled = true; button.textContent = 'Abrindo pagamento…';
-        try { const response = await fetch('/api/checkout', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ email: form.querySelector('input[type=email]').value, items: NomaStore.cart().map(item => ({id:item.id, quantity:item.qty})) }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Não foi possível iniciar o pagamento.'); location.href = data.url; }
+        try { const key = sessionStorage.getItem('noma-checkout-key') || crypto.randomUUID().replace(/-/g, ''); sessionStorage.setItem('noma-checkout-key', key); const response = await fetch('/api/checkout', { method: 'POST', headers: {'content-type':'application/json','idempotency-key':key}, body: JSON.stringify({ email: form.querySelector('input[type=email]').value, items: NomaStore.cart().map(item => ({id:item.id, quantity:item.qty})) }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Não foi possível iniciar o pagamento.'); location.href = data.url; }
         catch (error) { button.disabled = false; button.textContent = 'Ir para pagamento seguro →'; alert(error.message); }
       };
     </script>

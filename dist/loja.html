@@ -31,10 +31,10 @@
       let active='Todos';function render(){const list=active==='Todos'?NomaStore.products():NomaStore.products().filter(p=>p.category===active);products.innerHTML=list.map(p=>`<article class="card">
         <a href="produto.html?id=${p.id}">
           <div class="media">
-            <img src="${p.image}" alt="${p.name}">${p.tag?`<span class="tag">${p.tag}</span>`:''}</div>
+            <img src="${NomaStore.imageUrl(p.image)}" alt="${NomaStore.escapeHtml(p.name)}">${p.tag?`<span class="tag">${NomaStore.escapeHtml(p.tag)}</span>`:''}</div>
             <div class="card-info">
-              <div class="category">${p.category}</div>
-              <h3>${p.name}</h3>
+              <div class="category">${NomaStore.escapeHtml(p.category)}</div>
+              <h3>${NomaStore.escapeHtml(p.name)}</h3>
               <span class="price">${NomaStore.money(p.price)}</span>
             </div>
           </a>

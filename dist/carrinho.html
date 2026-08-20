@@ -42,10 +42,10 @@
         const shipping = items.length && subtotal < 299 ? 24.9 : 0;
         cartItemsElement.innerHTML = items.length ? items.map(({id, qty, product}) => `
           <article class="cart-item">
-            <a href="produto.html?id=${id}"><img src="${product.image}" alt="${product.name}"></a>
+            <a href="produto.html?id=${id}"><img src="${NomaStore.imageUrl(product.image)}" alt="${NomaStore.escapeHtml(product.name)}"></a>
             <div>
-              <div class="category">${product.category}</div>
-              <h3>${product.name}</h3>
+              <div class="category">${NomaStore.escapeHtml(product.category)}</div>
+              <h3>${NomaStore.escapeHtml(product.name)}</h3>
               <b>${NomaStore.money(product.price)}</b>
               <div class="qty-controls" aria-label="Quantidade de ${product.name}">
                 <button type="button" data-action="decrease" data-id="${id}" aria-label="Diminuir quantidade">−</button>

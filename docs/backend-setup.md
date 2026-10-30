@@ -1,8 +1,8 @@
 # Backend setup
 
-## Configuração de produção
+## Production configuration
 
-1. Faça login no Cloudflare e crie o banco:
+1. Sign in to Cloudflare and create the database:
 
 ```bash
 npx wrangler login
@@ -19,7 +19,8 @@ Add the returned D1 `database_id` to `wrangler.jsonc`:
 }]
 ```
 
-Substitua também `PUBLIC_SITE_URL` em `wrangler.jsonc` pelo domínio final. Depois aplique o schema e cadastre os segredos:
+Set `PUBLIC_SITE_URL` in `wrangler.jsonc` to your final domain. Apply the schema
+and configure secrets:
 
 ```bash
 npx wrangler d1 migrations apply noma-db --remote
@@ -28,18 +29,28 @@ npx wrangler secret put STRIPE_WEBHOOK_SECRET
 npm run deploy
 ```
 
-No Stripe, crie um endpoint `https://SEU-DOMINIO.com.br/api/webhooks/stripe` ouvindo `checkout.session.completed` e copie o signing secret para `STRIPE_WEBHOOK_SECRET`. Teste primeiro com as chaves de teste (`sk_test_`), valide um pedido completo e só então troque para as chaves de produção (`sk_live_`).
+In Stripe, create an endpoint at
+`https://YOUR-DOMAIN.example/api/webhooks/stripe` listening for
+`checkout.session.completed`. Copy its signing secret to `STRIPE_WEBHOOK_SECRET`.
+Use test keys (`sk_test_`) first, validate a complete order flow, and only then
+switch to production keys (`sk_live_`).
 
-O painel `admin.html` agora usa o D1 e exige o secret `ADMIN_TOKEN`. O painel ainda não faz pedidos automáticos a fornecedores; essa integração deve ser adicionada depois de validar as APIs e autorizações da plataforma.
+The `admin.html` dashboard uses D1 and requires the `ADMIN_TOKEN` secret.
+It does not automatically order from suppliers; add that integration only after
+validating the platform's APIs and permissions.
 
 ## Secrets
 
-Use `.env.example` como modelo, copie para `.env.production.local`, preencha localmente e importe no Worker:
+Copy `.env.example` to `.env.production.local`, fill it in locally and import it
+into the Worker:
 
-```bash
+```powershell
 Copy-Item .env.example .env.production.local
-# edite .env.production.local sem fazer commit
+# Edit .env.production.local locally; never commit its values.
 npx wrangler secret bulk .env.production.local
 ```
 
-Este projeto usa Cloudflare Workers com D1, não Pages puro. O formato `.env` é aceito pelo `wrangler secret bulk`; os valores são enviados como secrets e não ficam no bundle. [Documentação oficial](https://developers.cloudflare.com/workers/configuration/secrets/)
+This project uses Cloudflare Workers with D1 rather than static Pages. The
+`.env` format is accepted by `wrangler secret bulk`; values are stored as secrets
+instead of being embedded in the bundle. See the
+[official documentation](https://developers.cloudflare.com/workers/configuration/secrets/).

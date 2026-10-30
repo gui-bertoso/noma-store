@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Product — Noma</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pages.css">
+  </head>
+  <body>
+    <div data-header>
+    </div>
+    <main class="wrap" id="detail">
+    </main>
+    <div data-footer>
+    </div>
+    <div class="toast" id="toast">
+    </div>
+    <script src="store.js">
+    </script>
+    <script>
+      const id=Number(new URLSearchParams(location.search).get('id'))||1,p=NomaStore.products().find(x=>x.id===id);if(!p){detail.innerHTML='<div class="empty" style="margin:80px 0">Product not found. <a href="shop.html">Back to shop</a>
+      </div>'}else{document.title=p.name+' — Noma';detail.innerHTML=`<div class="product-detail">
+      <div class="detail-image">
+        <img src="${NomaStore.imageUrl(p.image)}" alt="${NomaStore.escapeHtml(p.name)}">
+      </div>
+      <div class="detail-copy">
+        <div class="crumb">
+          <a href="shop.html">Shop</a> / ${NomaStore.escapeHtml(p.category)}</div>${p.tag?`<span class="tag" style="position:static;align-self:flex-start;background:var(--lime)">${NomaStore.escapeHtml(p.tag)}</span>`:''}<h1>${NomaStore.escapeHtml(p.name)}</h1>
+          <div class="detail-price">${NomaStore.money(p.price)}</div>
+          <p>${NomaStore.escapeHtml(p.description||'A Noma piece made to be part of your daily life for years.')}</p>
+          <div class="features">
+            <div>✓ Carefully selected materials</div>
+            <div>✓ Tracked shipping throughout Brazil</div>
+            <div>✓ Easy returns within 30 days</div>
+          </div>
+          <div class="buy-row">
+            <input class="qty-input" id="quantity" type="number" min="1" max="${p.stock}" value="1" aria-label="Quantidade">
+            <button class="btn" onclick="buy()">Add to bag →</button>
+          </div>
+          <div class="notice">${p.stock} units available · secure checkout</div>
+        </div>
+      </div>`}function buy(){NomaStore.add(id,Number(quantity.value));toast.textContent='Product added to bag';toast.classList.add('on');setTimeout(()=>toast.classList.remove('on'),1800)}
+    </script>
+  </body>
+</html>

@@ -2,12 +2,12 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const files = [
   "admin.html",
-  "carrinho.html",
+  "cart.html",
   "checkout.html",
   "index.html",
-  "loja.html",
-  "produto.html",
-  "sobre.html",
+  "shop.html",
+  "product.html",
+  "about.html",
 ];
 const voidTags = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/i;
 

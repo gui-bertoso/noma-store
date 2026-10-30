@@ -52,11 +52,11 @@ CREATE INDEX IF NOT EXISTS idx_products_tenant ON products(tenant_id, active);
 CREATE INDEX IF NOT EXISTS idx_orders_tenant ON orders(tenant_id, created_at);
 INSERT OR IGNORE INTO tenants (id, name) VALUES ('noma', 'Noma Casa');
 INSERT OR IGNORE INTO products (id, tenant_id, name, category, price_cents, stock, image, tag, description) VALUES
-('1','noma','Luminária Nami','Iluminação',28990,8,'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=85','Novo','Luz suave e acolhedora com cúpula de linho e base em madeira certificada.'),
-('2','noma','Poltrona Serena','Mobiliário',124900,4,'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1000&q=85','Mais vendido','Conforto generoso, linhas leves e tecido de alta durabilidade para desacelerar.'),
-('3','noma','Vaso Terra','Decoração',13990,12,'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=85',NULL,'Cerâmica de acabamento fosco, moldada em pequenos lotes por artesãos locais.'),
-('4','noma','Mesa Duna','Mobiliário',47990,6,'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1000&q=85','Edição limitada','Mesa lateral compacta em madeira maciça com bordas suavemente arredondadas.'),
-('5','noma','Manta Brisa','Têxteis',21990,10,'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1000&q=85',NULL,'Trama macia de algodão reciclado para trazer textura e aconchego ao ambiente.'),
-('6','noma','Bandeja Orbe','Decoração',15990,9,'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1000&q=85','Novo','Uma peça versátil de cerâmica para organizar pequenos objetos com beleza.'),
-('7','noma','Cadeira Linha','Mobiliário',69990,5,'https://images.unsplash.com/photo-1598300056393-4aac492f4344?auto=format&fit=crop&w=1000&q=85',NULL,'Estrutura leve, assento confortável e desenho atemporal para qualquer mesa.'),
-('8','noma','Almofada Horizonte','Têxteis',11990,14,'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1000&q=85',NULL,'Capa removível de algodão com enchimento macio e toque natural.');
+('1','noma','Nami Lamp','Lighting',28990,8,'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=85','New','Soft, welcoming light with a linen shade and certified-wood base.'),
+('2','noma','Serena Armchair','Furniture',124900,4,'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1000&q=85','Bestseller','Generous comfort, light lines and durable fabric for slowing down.'),
+('3','noma','Terra Vase','Decor',13990,12,'https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1000&q=85',NULL,'Matte ceramic, shaped in small batches by local artisans.'),
+('4','noma','Duna Table','Furniture',47990,6,'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1000&q=85','Limited edition','Compact solid-wood side table with gently rounded edges.'),
+('5','noma','Brisa Throw','Textiles',21990,10,'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1000&q=85',NULL,'Soft recycled cotton adds texture and warmth to your space.'),
+('6','noma','Orbe Tray','Decor',15990,9,'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1000&q=85','New','A versatile ceramic piece for keeping small objects beautifully organized.'),
+('7','noma','Linha Chair','Furniture',69990,5,'https://images.unsplash.com/photo-1598300056393-4aac492f4344?auto=format&fit=crop&w=1000&q=85',NULL,'Lightweight frame, comfortable seating and timeless design for any table.'),
+('8','noma','Horizonte Cushion','Textiles',11990,14,'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1000&q=85',NULL,'Removable cotton cover with soft filling and a natural feel.');

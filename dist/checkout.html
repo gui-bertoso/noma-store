@@ -1,40 +1,40 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Pagamento — Noma</title>
+    <title>Payment — Noma</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="pages.css">
   </head>
   <body>
     <div data-header></div>
     <main class="checkout-box" id="box">
-      <div class="crumb"><a href="carrinho.html">← Voltar para a sacola</a></div>
-      <h1>Entrega e pagamento</h1>
+      <div class="crumb"><a href="cart.html">← Back to bag</a></div>
+      <h1>Delivery and payment</h1>
       <form class="checkout-form" id="form">
-        <div class="field"><label>Nome completo</label><input required autocomplete="name"></div>
-        <div class="field"><label>E-mail</label><input type="email" required autocomplete="email"></div>
-        <div class="field full"><label>Endereço</label><input required autocomplete="street-address"></div>
-        <div class="field"><label>CEP</label><input required placeholder="00000-000" autocomplete="postal-code"></div>
-        <div class="field"><label>Cidade</label><input required autocomplete="address-level2"></div>
-        <div class="field"><label>Estado</label><input required maxlength="2" placeholder="SP" autocomplete="address-level1"></div>
-        <div class="field full"><div class="order" style="position:static"><div class="line"><span>Produtos</span><b id="sub"></b></div><div class="line"><span>Entrega</span><b id="ship"></b></div><div class="line total"><span>Total</span><span id="grand"></span></div></div></div>
-        <div class="field full"><p>O pagamento será concluído com segurança no Stripe, após o envio deste formulário.</p><button class="btn">Ir para pagamento seguro →</button></div>
+        <div class="field"><label>Full name</label><input required autocomplete="name"></div>
+        <div class="field"><label>Email</label><input type="email" required autocomplete="email"></div>
+        <div class="field full"><label>Address</label><input required autocomplete="street-address"></div>
+        <div class="field"><label>Postal code</label><input required placeholder="00000-000" autocomplete="postal-code"></div>
+        <div class="field"><label>City</label><input required autocomplete="address-level2"></div>
+        <div class="field"><label>State</label><input required maxlength="2" placeholder="SP" autocomplete="address-level1"></div>
+        <div class="field full"><div class="order" style="position:static"><div class="line"><span>Products</span><b id="sub"></b></div><div class="line"><span>Delivery</span><b id="ship"></b></div><div class="line total"><span>Total</span><span id="grand"></span></div></div></div>
+        <div class="field full"><p>Payment will be completed securely through Stripe after submitting this form.</p><button class="btn">Continue to secure payment →</button></div>
       </form>
     </main>
     <div data-footer></div>
     <script src="store.js"></script>
     <script>
       const query = new URLSearchParams(location.search);
-      if (query.get('success') === '1') { NomaStore.setCart([]); sessionStorage.removeItem('noma-checkout-key'); sessionStorage.removeItem('noma-checkout-fingerprint'); document.getElementById('box').innerHTML = '<div class="success"><div class="success-mark">✓</div><h1>Pedido confirmado!</h1><p>Recebemos seu pagamento. Você receberá os próximos passos por e-mail.</p><a class="btn" href="index.html">Voltar ao início</a></div>'; }
-      if (query.get('cancelled') === '1') { sessionStorage.removeItem('noma-checkout-key'); sessionStorage.removeItem('noma-checkout-fingerprint'); alert('Pagamento cancelado. Sua sacola continua reservada.'); }
-      if (!NomaStore.cart().length && query.get('success') !== '1') location.href = 'carrinho.html';
+      if (query.get('success') === '1') { NomaStore.setCart([]); sessionStorage.removeItem('noma-checkout-key'); sessionStorage.removeItem('noma-checkout-fingerprint'); document.getElementById('box').innerHTML = '<div class="success"><div class="success-mark">✓</div><h1>Order confirmed!</h1><p>Your payment was received. The next steps will arrive by email.</p><a class="btn" href="index.html">Back to home</a></div>'; }
+      if (query.get('cancelled') === '1') { sessionStorage.removeItem('noma-checkout-key'); sessionStorage.removeItem('noma-checkout-fingerprint'); alert('Payment canceled. Your bag is still reserved.'); }
+      if (!NomaStore.cart().length && query.get('success') !== '1') location.href = 'cart.html';
       const subtotal = NomaStore.subtotal(), frete = subtotal >= 299 ? 0 : 24.9;
-      sub.textContent = NomaStore.money(subtotal); ship.textContent = frete ? NomaStore.money(frete) : 'Grátis'; grand.textContent = NomaStore.money(subtotal + frete);
-      form.onsubmit = async (event) => { event.preventDefault(); const button = form.querySelector('button'); button.disabled = true; button.textContent = 'Abrindo pagamento…';
-        try { const email = form.querySelector('input[type=email]').value.trim().toLowerCase(); const items = NomaStore.cart().map(item => ({id:item.id, quantity:item.qty})); const fingerprint = JSON.stringify({email,items}); let key = sessionStorage.getItem('noma-checkout-key'); if (sessionStorage.getItem('noma-checkout-fingerprint') !== fingerprint || !key) { key = crypto.randomUUID().replace(/-/g, ''); sessionStorage.setItem('noma-checkout-key', key); sessionStorage.setItem('noma-checkout-fingerprint', fingerprint); } const response = await fetch('/api/checkout', { method: 'POST', headers: {'content-type':'application/json','idempotency-key':key}, body: JSON.stringify({ email, items }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Não foi possível iniciar o pagamento.'); location.href = data.url; }
-        catch (error) { button.disabled = false; button.textContent = 'Ir para pagamento seguro →'; alert(error.message); }
+      sub.textContent = NomaStore.money(subtotal); ship.textContent = frete ? NomaStore.money(frete) : 'Free'; grand.textContent = NomaStore.money(subtotal + frete);
+      form.onsubmit = async (event) => { event.preventDefault(); const button = form.querySelector('button'); button.disabled = true; button.textContent = 'Opening checkout…';
+        try { const email = form.querySelector('input[type=email]').value.trim().toLowerCase(); const items = NomaStore.cart().map(item => ({id:item.id, quantity:item.qty})); const fingerprint = JSON.stringify({email,items}); let key = sessionStorage.getItem('noma-checkout-key'); if (sessionStorage.getItem('noma-checkout-fingerprint') !== fingerprint || !key) { key = crypto.randomUUID().replace(/-/g, ''); sessionStorage.setItem('noma-checkout-key', key); sessionStorage.setItem('noma-checkout-fingerprint', fingerprint); } const response = await fetch('/api/checkout', { method: 'POST', headers: {'content-type':'application/json','idempotency-key':key}, body: JSON.stringify({ email, items }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Could not start checkout.'); location.href = data.url; }
+        catch (error) { button.disabled = false; button.textContent = 'Continue to secure payment →'; alert(error.message); }
       };
     </script>
   </body>

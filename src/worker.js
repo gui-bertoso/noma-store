@@ -92,7 +92,7 @@ async function api(request, env) {
       seen.add(String(input.id));
       const quantity = Number(input.quantity);
       const product = await env.DB.prepare("SELECT id, name, price_cents, stock FROM products WHERE id = ? AND active = 1").bind(String(input.id)).first();
-      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20 || !product || product.stock < quantity) return json({ error: "Produto indisponível ou quantidade inválida" }, 409);
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20 || !product || product.stock < quantity) return json({ error: "Product unavailable or invalid quantity" }, 409);
       items.push({ ...product, quantity });
     }
     const orderId = crypto.randomUUID();
@@ -100,7 +100,7 @@ async function api(request, env) {
     const shipping = productTotal >= 29900 ? 0 : 2490;
     const total = productTotal + shipping;
     await env.DB.batch([env.DB.prepare("INSERT INTO orders (id, tenant_id, email, status, total_cents, idempotency_key) VALUES (?, 'noma', ?, 'pending', ?, ?)").bind(orderId, body.email, total, idempotencyKey), ...items.map((item) => env.DB.prepare("INSERT INTO order_items (order_id, product_id, quantity, unit_price_cents) VALUES (?, ?, ?, ?)").bind(orderId, item.id, item.quantity, item.price_cents))]);
-    if (shipping) items.push({ name: "Frete", price_cents: shipping, quantity: 1 });
+    if (shipping) items.push({ name: "Shipping", price_cents: shipping, quantity: 1 });
     const session = await createStripeSession(env, orderId, body.email, items, idempotencyKey);
     if (!session?.url) { await env.DB.prepare("UPDATE orders SET status = 'payment_failed' WHERE id = ?").bind(orderId).run(); return json({ error: "Unable to initiate payment" }, 502); }
     await env.DB.prepare("UPDATE orders SET payment_id = ? WHERE id = ?").bind(session.id, orderId).run();

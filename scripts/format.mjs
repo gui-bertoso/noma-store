@@ -1,12 +1,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 const files = [
   "admin.html",
-  "carrinho.html",
+  "cart.html",
   "checkout.html",
   "index.html",
-  "loja.html",
-  "produto.html",
-  "sobre.html",
+  "shop.html",
+  "product.html",
+  "about.html",
   "pages.css",
   "store.js",
 ];
